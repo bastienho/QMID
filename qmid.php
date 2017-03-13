@@ -44,7 +44,7 @@ $conf_rules_filename = "qmid-rules.conf";
  // CALL BY EXTERNAL USER
  if(!isset($argv) && isset($_GET) && SECRETTOKEN){
      if(!isset($_GET['t']) || SECRETTOKEN != $_GET['t']){
-        echo "\nERROR: invalid token.\n".SECRETTOKEN.' > '.$_GET['t'];
+        echo "\nERROR: invalid token.\n";
         exit(1);
      }
      else{
