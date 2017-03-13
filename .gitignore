@@ -1,6 +1,8 @@
 # Ignore local configurations:
-qmid-rules.conf
-qmid.conf
+qmid*.conf
+!qmid.conf.dist
+*qmid-rules.conf.dist
+LOGFILE
 # Ignore auxiliar scripts:
 upload2server.sh
 exec.sh

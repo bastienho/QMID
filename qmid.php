@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-/* 
+/*
  * QMID: Queru's mail IMAP dispatcher.
  * © Jorge Fuertes AKA Queru - jorge@jorgefuertes.com
  * © July 2009.
@@ -28,16 +28,19 @@
  * Configuration:
  */
  define('APP_PATH', dirname(__FILE__));
- define('RULES', APP_PATH."/qmid-rules.conf");
- require(APP_PATH.DIRECTORY_SEPARATOR."qmid.conf");
- define('IMAP_CONN',  "{".IMAP_HOST.":".IMAP_PORT.IMAP_OPTIONS."}".IMAP_INBOX);
+$conf_filename = "qmid.conf";
+$conf_rules_filename = "qmid-rules.conf";
+ require_ONCE(APP_PATH.DIRECTORY_SEPARATOR.$conf_filename);
  error_reporting(ERRORLEVEL);
+
+ $arg_values = array();
 
  /*
   * Take command line arguments:
   * -v/--verbose: Verbose mode (defaults to log mode).
   * -d/--deliver: Deliver mode (defaults to imap client mode).
   * -l/--log:     Log to file  (defaults to yes).
+  * -c/--conf:    Conf name    (defaults to "").
   */
  foreach($argv as $key => $arg)
  {
@@ -57,13 +60,23 @@
         {
             echo "\nERROR: Deliver mode incompatible with verbose mode.\n";
             exit(1);
-        }            
+        }
     }
     elseif(preg_match("/\-l|\-\-log/", $arg))
     {
         define('LOG', true);
     }
-    elseif(!preg_match("/qmid.php/", $arg))
+    elseif(preg_match("/\-c|\-\-conf/", $arg))
+    {
+        if(isset($argv[$key+1]) && substr($argv[$key+1], 0, 1)!='-'){
+		define('CONF', $argv[$key+1]);
+                $arg_values[$arg] = $argv[$key+1];
+	}
+        else{
+                define('CONF', false);
+	}
+    }
+    elseif(!preg_match("/qmid.php/", $arg) && !in_array($arg, $arg_values))
     {
         echo "\nERROR: Unknown argument '".$arg."'";
         exit(1);
@@ -73,6 +86,15 @@
  if(!defined('VERBOSE')) define ('VERBOSE', true);
  if(!defined('LOG'))     define ('LOG',     true);
  if(!defined('DELIVER')) define ('DELIVER', false);
+ if(!defined('CONF'))    define ('CONF', false);
+
+if(CONF && is_file(APP_PATH."/qmid-".CONF.".conf") && is_file(APP_PATH."/qmid-rules-".CONF.".conf")){
+	$conf_filename = "qmid-".CONF.".conf";
+	$conf_rules_filename = "qmid-rules-".CONF.".conf";
+}
+define('RULES', APP_PATH.DIRECTORY_SEPARATOR.$conf_rules_filename);
+require_ONCE(APP_PATH.DIRECTORY_SEPARATOR.$conf_filename);
+define('IMAP_CONN',  "{".IMAP_HOST.":".IMAP_PORT.IMAP_OPTIONS."}".IMAP_INBOX);
 
  /* Instantiate general output and error: */
  $output = new Output();
@@ -170,7 +192,7 @@
       * Full text search.
       * @param string Text to search.
       * @return array Array of messages matching the search.
-      * 
+      *
       */
      function SearchByBody($text)
      {
@@ -497,7 +519,7 @@
     {
         return $this->aRules;
     }
-    
+
     /*
      * Shows a human readable list of rules:
      */
