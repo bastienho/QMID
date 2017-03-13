@@ -30,7 +30,7 @@
  define('APP_PATH', dirname(__FILE__));
 $conf_filename = "qmid.conf";
 $conf_rules_filename = "qmid-rules.conf";
- require_ONCE(APP_PATH.DIRECTORY_SEPARATOR.$conf_filename);
+ require_ONCE(APP_PATH.DIRECTORY_SEPARATOR.'conf'.DIRECTORY_SEPARATOR.$conf_filename);
  error_reporting(ERRORLEVEL);
 
  $arg_values = array();
@@ -88,12 +88,12 @@ $conf_rules_filename = "qmid-rules.conf";
  if(!defined('DELIVER')) define ('DELIVER', false);
  if(!defined('CONF'))    define ('CONF', false);
 
-if(CONF && is_file(APP_PATH."/qmid-".CONF.".conf") && is_file(APP_PATH."/qmid-rules-".CONF.".conf")){
+if(CONF && is_file(APP_PATH.DIRECTORY_SEPARATOR.'conf'.DIRECTORY_SEPARATOR."qmid-".CONF.".conf") && is_file(APP_PATH.DIRECTORY_SEPARATOR.'conf'.DIRECTORY_SEPARATOR."qmid-rules-".CONF.".conf")){
 	$conf_filename = "qmid-".CONF.".conf";
 	$conf_rules_filename = "qmid-rules-".CONF.".conf";
 }
-define('RULES', APP_PATH.DIRECTORY_SEPARATOR.$conf_rules_filename);
-require_ONCE(APP_PATH.DIRECTORY_SEPARATOR.$conf_filename);
+define('RULES', APP_PATH.DIRECTORY_SEPARATOR.'conf'.DIRECTORY_SEPARATOR.$conf_rules_filename);
+require_ONCE(APP_PATH.DIRECTORY_SEPARATOR.'conf'.DIRECTORY_SEPARATOR.$conf_filename);
 define('IMAP_CONN',  "{".IMAP_HOST.":".IMAP_PORT.IMAP_OPTIONS."}".IMAP_INBOX);
 
  /* Instantiate general output and error: */

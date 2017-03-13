@@ -1,10 +1,11 @@
 # Ignore local configurations:
-qmid*.conf
-!qmid.conf.dist
-*qmid-rules.conf.dist
+conf/qmid*.conf
+!conf/qmid.conf.dist
+!conf/qmid-rules.conf.dist
 LOGFILE
 # Ignore auxiliar scripts:
 upload2server.sh
 exec.sh
 # Ignore vim backups:
 *~
+/nbproject/private/
