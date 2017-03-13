@@ -33,7 +33,6 @@ $conf_rules_filename = "qmid-rules.conf";
  require_ONCE(APP_PATH.DIRECTORY_SEPARATOR.'conf'.DIRECTORY_SEPARATOR.$conf_filename);
  error_reporting(ERRORLEVEL);
 
- $arg_values = array();
 
  /*
   * Take command line arguments:
@@ -42,44 +41,69 @@ $conf_rules_filename = "qmid-rules.conf";
   * -l/--log:     Log to file  (defaults to yes).
   * -c/--conf:    Conf name    (defaults to "").
   */
- foreach($argv as $key => $arg)
- {
-    if(preg_match("/\-v|\-\-verbose/", $arg))
-    {
-        define('VERBOSE', true);
-        if(defined('DELIVER'))
-        {
-            echo "\nERROR: Verbose mode incompatible with deliver mode.\n";
-            exit(1);
-        }
-    }
-    elseif(preg_match("/\-d|\-\-deliver/", $arg))
-    {
-        define('DELIVER', true);
-        if(defined('VERBOSE'))
-        {
-            echo "\nERROR: Deliver mode incompatible with verbose mode.\n";
-            exit(1);
-        }
-    }
-    elseif(preg_match("/\-l|\-\-log/", $arg))
-    {
-        define('LOG', true);
-    }
-    elseif(preg_match("/\-c|\-\-conf/", $arg))
-    {
-        if(isset($argv[$key+1]) && substr($argv[$key+1], 0, 1)!='-'){
-		define('CONF', $argv[$key+1]);
-                $arg_values[$arg] = $argv[$key+1];
-	}
-        else{
-                define('CONF', false);
-	}
-    }
-    elseif(!preg_match("/qmid.php/", $arg) && !in_array($arg, $arg_values))
-    {
-        echo "\nERROR: Unknown argument '".$arg."'";
+ // CALL BY EXTERNAL USER
+ if(!isset($argv) && isset($_GET) && SECRETTOKEN){
+     if(!isset($_GET['t']) || SECRETTOKEN != $_GET['t']){
+        echo "\nERROR: invalid token.\n".SECRETTOKEN.' > '.$_GET['t'];
         exit(1);
+     }
+     else{
+         header('COntent-Type: text/plain');
+        foreach($_GET as $arg=>$value){
+            if($arg=='c' || $arg=='conf'){
+                define('CONF', $value);
+            }
+            elseif($arg=='v' || $arg=='verbose'){
+                define('VERBOSE', true);
+            }
+            elseif($arg=='d' || $arg=='deliver'){
+                define('DELIVER', true);
+            }
+        }
+     }
+ }
+ // CALL IN CLI
+ else{
+    $arg_values = array();
+    foreach($argv as $key => $arg)
+    {
+       if(preg_match("/\-v|\-\-verbose/", $arg))
+       {
+           define('VERBOSE', true);
+           if(defined('DELIVER'))
+           {
+               echo "\nERROR: Verbose mode incompatible with deliver mode.\n";
+               exit(1);
+           }
+       }
+       elseif(preg_match("/\-d|\-\-deliver/", $arg))
+       {
+           define('DELIVER', true);
+           if(defined('VERBOSE'))
+           {
+               echo "\nERROR: Deliver mode incompatible with verbose mode.\n";
+               exit(1);
+           }
+       }
+       elseif(preg_match("/\-l|\-\-log/", $arg))
+       {
+           define('LOG', true);
+       }
+       elseif(preg_match("/\-c|\-\-conf/", $arg))
+       {
+           if(isset($argv[$key+1]) && substr($argv[$key+1], 0, 1)!='-'){
+                   define('CONF', $argv[$key+1]);
+                   $arg_values[$arg] = $argv[$key+1];
+           }
+           else{
+                   define('CONF', false);
+           }
+       }
+       elseif(!preg_match("/qmid.php/", $arg) && !in_array($arg, $arg_values))
+       {
+           echo "\nERROR: Unknown argument '".$arg."'";
+           exit(1);
+       }
     }
  }
  /* Defaults: */

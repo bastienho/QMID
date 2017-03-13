@@ -1,9 +1,15 @@
 <?php
-/* 
+/*
  * QMID's general configuration.
  * TODO: Translate to real conf, no code.
  */
- 
+
+// GLOBAL SETTINGS
+ define('ERRORLEVEL',   "E_ALL ^ E_NOTICE ^ E_WARNING");
+ define('SECRETTOKEN',   "PleaseChangeThisDummyTokenString");
+
+
+ // SETTINGS THAT CAN BE MOVE IN MULTIPLE FILES
  define('IMAP2_HEADERS', "BCC, CC, FROM, SUBJECT, TO");
  define('DATEFORMAT',   "d/m/Y@H:i:s");
  define('LOGFILE',      "/var/log/qmid.log");
@@ -13,6 +19,4 @@
  define('IMAP_PASS',    "mypass");
  define('IMAP_INBOX',   "INBOX");
  define('IMAP_OPTIONS', "/imap/ssl/novalidate-cert");
- define('ERRORLEVEL',   "E_ALL ^ E_NOTICE ^ E_WARNING");
-
 ?>
